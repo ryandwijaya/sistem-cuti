@@ -92,11 +92,12 @@
                             </button>
 
                         </form>
-                    @else
-                        <h4 class="text-warning">Kamu Telah Melakukan Pengajuan Cuti</h4>
-                        <h5>Silahkan Tunggu Untuk Dikonfirmasi !</h5>
+                        @elseif($status == 'running')
+                        <h4 class="text-warning">Kamu Telah Mengajukan Cuti Untuk Tanggal {{ date_indo($pengajuan->cuti_tgl_mulai) }}</h4>
+                        <h5>Silahkan Tekan Selesai Jika Kamu Sudah Selesai Cuti !</h5>
                         <h6>Data Pengajuan :</h6>
                         <table cellpadding="5">
+
                             <tr>
                                 <td>Jenis Cuti</td>
                                 <td>:</td>
@@ -110,12 +111,12 @@
                             <tr>
                                 <td>Cuti Mulai</td>
                                 <td>:</td>
-                                <td>{{ $pengajuan->cuti_tgl_mulai }}</td>
+                                <td>{{ date_indo($pengajuan->cuti_tgl_mulai) }}</td>
                             </tr>
                             <tr>
                                 <td>Cuti Selesai</td>
                                 <td>:</td>
-                                <td>{{ $pengajuan->cuti_tgl_selesai }}</td>
+                                <td>{{ date_indo($pengajuan->cuti_tgl_selesai) }}</td>
                             </tr>
                             <tr>
                                 <td>Status</td>
@@ -124,8 +125,43 @@
                                 </td>
                             </tr>
                         </table>
+                        <a href="{{ url('backend/cuti/selesai', $pengajuan->cuti_id) }}"
+                           onclick="confirm('Yakin ingin menyelesaikan cuti ?')"
+                           class="float-right btn btn-success btn-sm"> Tandai Selesai</a>
+                    @else
+                        <h4 class="text-warning">Kamu Telah Melakukan Pengajuan Cuti</h4>
+                        <h5>Silahkan Tunggu Untuk Dikonfirmasi !</h5>
+                        <h6>Data Pengajuan :</h6>
+                        <table cellpadding="5">
 
-                        <a href="{{ url('cuti/cancel') }}/{{ $pengajuan->cuti_id }}"
+                            <tr>
+                                <td>Jenis Cuti</td>
+                                <td>:</td>
+                                <td>{{ $pengajuan->cuti_jenis }}</td>
+                            </tr>
+                            <tr>
+                                <td>Alasan Cuti</td>
+                                <td>:</td>
+                                <td>{{ $pengajuan->cuti_alasan }}</td>
+                            </tr>
+                            <tr>
+                                <td>Cuti Mulai</td>
+                                <td>:</td>
+                                <td>{{ date_indo($pengajuan->cuti_tgl_mulai) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Cuti Selesai</td>
+                                <td>:</td>
+                                <td>{{ date_indo($pengajuan->cuti_tgl_selesai) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Status</td>
+                                <td>:</td>
+                                <td><span class="badge badge-warning">{{ $pengajuan->cuti_status_pengajuan }}</span>
+                                </td>
+                            </tr>
+                        </table>
+                        <a href="{{ url('backend/cuti/cancel', $pengajuan->cuti_id) }}"
                            onclick="confirm('Yakin ingin membatalkan pengajuan ini?')"
                            class="float-right btn btn-danger btn-sm">Batalkan</a>
 
@@ -139,3 +175,61 @@
 
 
 @endsection
+
+
+
+
+<?php
+function date_indo($tgl)
+{
+    $ubah = gmdate($tgl, time()+60*60*8);
+    $pecah = explode("-",$ubah);
+    $tanggal = $pecah[2];
+    $bulan = bulan($pecah[1]);
+    $tahun = $pecah[0];
+    return $tanggal.' '.$bulan.' '.$tahun;
+}
+
+function bulan($bln)
+{
+    switch ($bln)
+    {
+        case 1:
+            return "Januari";
+            break;
+        case 2:
+            return "Februari";
+            break;
+        case 3:
+            return "Maret";
+            break;
+        case 4:
+            return "April";
+            break;
+        case 5:
+            return "Mei";
+            break;
+        case 6:
+            return "Juni";
+            break;
+        case 7:
+            return "Juli";
+            break;
+        case 8:
+            return "Agustus";
+            break;
+        case 9:
+            return "September";
+            break;
+        case 10:
+            return "Oktober";
+            break;
+        case 11:
+            return "November";
+            break;
+        case 12:
+            return "Desember";
+            break;
+    }
+}
+?>

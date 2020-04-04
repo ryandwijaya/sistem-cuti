@@ -16,7 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/','backend\PegawaiController@index');
 
 
+//Route::get('/kepala/cuti/pengajuan','backend\PegawaiController@index');
+
+
 Route::post('/cuti/ajukan','backend\CutiController@ajukan');
+
+
 
 
 
@@ -25,6 +30,9 @@ Route::group(['prefix'=>'backend'],function(){
     Route::get('/cuti/pengajuan','backend\CutiController@pengajuan');
     Route::get('/cuti/riwayat','backend\CutiController@riwayat');
     Route::get('/cuti/detail','backend\CutiController@detail');
+    Route::get('/cuti/cancel/{id}','backend\CutiController@cancel');
+    Route::get('/cuti/selesai/{id}','backend\CutiController@selesai');
+    Route::get('/cuti/aksi/{id}/{param}','backend\CutiController@aksi');
 });
 
 

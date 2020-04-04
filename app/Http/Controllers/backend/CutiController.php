@@ -23,21 +23,47 @@ class CutiController extends Controller
      */
     public function pengajuan(Request $request)
     {
-        $check_pengajuan = DB::table('data_cuti')
-            ->where('cuti_pegawai', '=', $request->user()->id_pegawai)
-            ->where('cuti_status_pengajuan', '=', 'menunggu')
-            ->count();
-        if ($check_pengajuan != 1) {
-            $data['status'] = 'enable';
-            return view('backend/cuti/form_pengajuan', $data);
-        } else {
-            $data['status'] = 'disable';
+        if ($request->user()->level == 'kepala'){
             $data['pengajuan'] = DB::table('data_cuti')
+                ->leftJoin('pegawai', 'pegawai.pegawai_id', '=', 'data_cuti.cuti_pegawai')
+                ->get();
+            return view('backend/cuti/data_pengajuan', $data);
+        }elseif($request->user()->level == 'pegawai'){
+            $check_pengajuan = DB::table('data_cuti')
                 ->where('cuti_pegawai', '=', $request->user()->id_pegawai)
                 ->where('cuti_status_pengajuan', '=', 'menunggu')
-                ->first();;
-            return view('backend/cuti/form_pengajuan', $data);
+                ->count();
+            $check_cuti = DB::table('data_cuti')
+                ->where('cuti_pegawai', '=', $request->user()->id_pegawai)
+                ->where('cuti_status_pengajuan', '=', 'diterima')
+                ->count();
+
+            if ($check_pengajuan != 1) {
+                if ($check_cuti == 1){
+                    $data['status'] = 'running';
+                    $data['pengajuan'] = DB::table('data_cuti')
+                        ->where('cuti_pegawai', '=', $request->user()->id_pegawai)
+                        ->where('cuti_status_pengajuan', '=', 'diterima')
+                        ->first();
+//                var_dump($data['pengajuan']);exit();
+                    return view('backend/cuti/form_pengajuan', $data);
+                }else{
+                    $data['status'] = 'enable';
+                    return view('backend/cuti/form_pengajuan', $data);
+                }
+
+            } else{
+                $data['status'] = 'disable';
+                $data['pengajuan'] = DB::table('data_cuti')
+                    ->where('cuti_pegawai', '=', $request->user()->id_pegawai)
+                    ->where('cuti_status_pengajuan', '=', 'menunggu')
+                    ->first();
+                return view('backend/cuti/form_pengajuan', $data);
+            }
+        }else{
+
         }
+
     }
 
     public function ajukan(Request $request)
@@ -124,6 +150,35 @@ class CutiController extends Controller
         return view('backend/cuti/riwayat', $data);
     }
 
+    public function cancel($id ,Request $request)
+    {
+        $data= DB::table('data_cuti')->where('cuti_id', '=', $id)->delete();
+        $request->session()->flash('alert-wrong', ' Menghapus Data');
+        return redirect('backend/cuti/pengajuan');
+    }
+    public function selesai($id ,Request $request)
+    {
+        DB::table('data_cuti')->where('cuti_id',$id)->update([
+            'cuti_status_pengajuan' => 'selesai'
+        ]);
+        $request->session()->flash('alert', ' Memproses Data');
+        return redirect('backend/cuti/pengajuan');
+    }
+    public function aksi($id ,$param,Request $request)
+    {
+        if ($param == 1){
+            DB::table('data_cuti')->where('cuti_id',$id)->update([
+                'cuti_status_pengajuan' => 'diterima'
+            ]);
+        }else{
+            DB::table('data_cuti')->where('cuti_id',$id)->update([
+                'cuti_status_pengajuan' => 'ditolak'
+            ]);
+        }
+        $request->session()->flash('alert', ' Memproses Data');
+        return redirect('backend/cuti/pengajuan');
+    }
+
     public function detail()
     {
         $cuti_id = (int)$_GET['id'];
@@ -151,6 +206,7 @@ class CutiController extends Controller
     {
         $jumlah_cuti = DB::table('data_cuti')
             ->where('cuti_status_pengajuan', '=', 'diterima')
+            ->orWhere('cuti_status_pengajuan', '=','selesai')
             ->count();
         return $jumlah_cuti;
     }

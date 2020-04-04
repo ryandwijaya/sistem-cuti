@@ -235,12 +235,21 @@
                     </li>
 
                     <li class="menu-title">OPERATION</li>
+                    @if(Auth::user()->level == 'pegawai')
                     <li>
                         <a href="{{ url('/backend/cuti/pengajuan') }}" class=" waves-effect">
                             <i class="bx bx-paste"></i>
                             <span>Pengajuan Cuti</span>
                         </a>
                     </li>
+                    @elseif(Auth::user()->level == 'kepala')
+                    <li>
+                        <a href="{{ url('/kepala/cuti/pengajuan') }}" class=" waves-effect">
+                            <i class="bx bx-paste"></i>
+                            <span>Pengajuan Cuti</span>
+                        </a>
+                    </li>
+                    @endif
                     <li>
                         <a href="{{ url('/backend/cuti/riwayat') }}" class=" waves-effect">
                             <i class="bx bx-history"></i>
@@ -274,6 +283,17 @@
                         </button>
                         <strong><i class="ion ion-md-checkmark-circle"></i> BERHASIL
                         </strong> {{ \Illuminate\Support\Facades\Session::get('alert','berhasil menjalankan operasi') }}
+                    </div>
+                @endif
+                @if(\Illuminate\Support\Facades\Session::has('alert-wrong'))
+                    <div
+                        class="alert alert-success bg-warning alert-dismissible fade show animated bounceIn text-white"
+                        role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true" class="text-white">×</span>
+                        </button>
+                        <strong><i class="ion ion-md-checkmark-circle"></i> BERHASIL
+                        </strong> {{ \Illuminate\Support\Facades\Session::get('alert','berhasil menghapus data') }}
                     </div>
                 @endif
 
@@ -370,6 +390,7 @@
     });
 
 </script>
+
 <script src="{{ asset('/assets/js/app.js') }}"></script>
 
 </body>
