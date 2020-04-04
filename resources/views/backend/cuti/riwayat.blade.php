@@ -9,7 +9,6 @@
             <div class="card">
                 <div class="card-header bg-muted text-light">
                     <h4 class="card-title float-left">Data Riwayat Cuti</h4>
-                    <button class="btn btn-primary float-right btn-sm" data-toggle="modal" data-target=".bs-example-modal-center"><i class="fa fa-plus"></i> Data Pegawai</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

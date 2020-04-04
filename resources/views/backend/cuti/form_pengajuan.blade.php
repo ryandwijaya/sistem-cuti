@@ -12,7 +12,7 @@
                 </div>
                 <div class="card-body">
                     @if($status == 'enable')
-                        <form action="{{ url('cuti/ajukan') }}" method="post">
+                        <form action="{{ url('cuti/ajukan') }}" method="post" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <div class="form-group row">
                                 <div class="col-md-2">
@@ -20,7 +20,8 @@
                                 </div>
                                 <div class="col-md-10">
                                     <input type="hidden" value="{{ Auth::user()->id_pegawai }}" name="id_pegawai">
-                                    <input type="text" class="form-control" name="nama" value="{{ Auth::user()->name }}" readonly placeholder="Masukkan nama pegawai">
+                                    <input type="text" class="form-control" name="nama" value="{{ Auth::user()->name }}"
+                                           readonly placeholder="Masukkan nama pegawai">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -28,7 +29,7 @@
                                     <label>Jenis Cuti</label>
                                 </div>
                                 <div class="col-md-10">
-                                    <select name="jenis" class="form-control" required>
+                                    <select name="jenis" class="form-control" id="jenis-cuti" required>
                                         <option disabled selected>- Pilih Jenis Cuti -</option>
                                         <option>Cuti Tahunan</option>
                                         <option>Cuti Sakit</option>
@@ -40,12 +41,22 @@
                                 </div>
                             </div>
 
+                            <div class="form-group row" id="lampiran" style="display: none;">
+                                <div class="col-md-2">
+                                    <label>Lampiran</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input type="file" name="lampiran" class="dropify">
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-md-2">
                                     <label>Alasan Cuti</label>
                                 </div>
                                 <div class="col-md-10">
-                                    <textarea name="alasan" class="form-control" placeholder="Masukkan Alasan Cuti" required></textarea>
+                                    <textarea name="alasan" class="form-control" placeholder="Masukkan Alasan Cuti"
+                                              required></textarea>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -53,8 +64,10 @@
                                     <label>Lama / Durasi Cuti</label>
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="number" min="1" name="durasi" class="form-control" placeholder="Lama Cuti" required>
-                                </div><span class="mt-3">Hari</span>
+                                    <input type="number" min="1" id="durasi" name="durasi" class="form-control"
+                                           placeholder="Lama Cuti" required>
+                                </div>
+                                <span class="mt-3">Hari</span>
 
                                 <div class="col-md-1 ml-5">Mulai Tanggal</div>
                                 <div class="col-md-2">
@@ -70,10 +83,13 @@
                                     <label>Alamat Selama Cuti</label>
                                 </div>
                                 <div class="col-md-10">
-                                    <textarea name="alamat_cuti"  class="form-control" placeholder="Masukkan alamat selama menjalankan cuti" required></textarea>
+                                    <textarea name="alamat_cuti" class="form-control"
+                                              placeholder="Masukkan alamat selama menjalankan cuti" required></textarea>
                                 </div>
                             </div>
-                            <button class="btn btn-success float-right" onclick="confirm('Apakah anda yakin ingin mengajukan cuti?')">Ajukan</button>
+                            <button class="btn btn-success float-right"
+                                    onclick="confirm('Apakah anda yakin ingin mengajukan cuti?')">Ajukan
+                            </button>
 
                         </form>
                     @else
@@ -104,11 +120,14 @@
                             <tr>
                                 <td>Status</td>
                                 <td>:</td>
-                                <td><span class="badge badge-warning">{{ $pengajuan->cuti_status_pengajuan }}</span></td>
+                                <td><span class="badge badge-warning">{{ $pengajuan->cuti_status_pengajuan }}</span>
+                                </td>
                             </tr>
                         </table>
 
-                        <a href="{{ url('cuti/cancel') }}/{{ $pengajuan->cuti_id }}" onclick="confirm('Yakin ingin membatalkan pengajuan ini?')" class="float-right btn btn-danger btn-sm">Batalkan</a>
+                        <a href="{{ url('cuti/cancel') }}/{{ $pengajuan->cuti_id }}"
+                           onclick="confirm('Yakin ingin membatalkan pengajuan ini?')"
+                           class="float-right btn btn-danger btn-sm">Batalkan</a>
 
                     @endif
 
@@ -116,5 +135,7 @@
             </div>
         </div>
     </div>
+
+
 
 @endsection

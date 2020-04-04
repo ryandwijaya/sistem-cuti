@@ -12,6 +12,7 @@
     <link href="{{ asset('') }}assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ asset('') }}assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.css">
     <!-- Responsive datatable examples -->
     <link href="{{ asset('') }}assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
 
@@ -341,7 +342,34 @@
 
 <!-- Datatable init js -->
 <script src="{{ asset('') }}assets/js/pages/datatables.init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.js"></script>
+<script>
+    $('.dropify').dropify();
+</script>
 
+<script>
+    $(document).ready(function () {
+
+        var root = window.location.origin + '/desacenter/public/';
+        $('#jenis-cuti').change(function () {
+            var val = $(this).val();
+            if(val == 'Cuti Sakit'){
+                $('#lampiran').show();
+                $('#durasi').attr('max', 3);
+            }else if(val == 'Cuti Tahunan'){
+                $('#lampiran').hide();
+                $('#durasi').attr('max', 18);
+            }else if(val == 'Cuti Karena Alasan Penting'){
+                $('#lampiran').hide();
+                $('#durasi').attr('max', 14);
+            }else{
+                $('#durasi').attr('max', 999);
+                $('#lampiran').hide();
+            }
+        });
+    });
+
+</script>
 <script src="{{ asset('/assets/js/app.js') }}"></script>
 
 </body>
